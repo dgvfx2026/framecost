@@ -13,7 +13,7 @@ npm start
 npm run build
 ```
 
-Abra http://127.0.0.1:4173. O build confere sintaxe, executa 72 testes e verifica todos os arquivos estáticos e importações. Não é necessário instalar pacotes. O runner é executado diretamente para compatibilidade com ambientes Windows restritos.
+Abra http://127.0.0.1:4173. O build confere sintaxe, executa 80 testes e verifica todos os arquivos estáticos e importações. Não é necessário instalar pacotes. O runner é executado diretamente para compatibilidade com ambientes Windows restritos.
 
 ## Uso
 
@@ -34,6 +34,7 @@ O comparativo filtra mensal e anual separadamente. Selos só comparam mesmo mode
 | dist/segments.mjs | Composição de clipes e regras de cobrança |
 | dist/engine.mjs | Custo econômico, saldo, pagamento, projeto e precificação |
 | dist/comparison.mjs | Filtros, plano em foco, ciclo, equivalência e ranking |
+| dist/live-render.mjs | Atualização de resultados que mantém o campo editado e seus ancestrais no DOM |
 | dist/app.mjs | Interface, estado local, migração, câmbio e exportação |
 | tests/engine.test.mjs | Testes do motor e entrada da suíte |
 | tests/regressions.test.mjs | Casos reais do catálogo e regressões dos erros relatados |
@@ -55,7 +56,7 @@ O comparativo filtra mensal e anual separadamente. Selos só comparam mesmo mode
 
 ## Limitações
 
-Krea e SJinn têm preços de assinatura auditados, mas não tarifa exata suficiente para os seis modelos. Não entram automaticamente no custo de vídeo. Wan Prime na Magnific e Wan 3 no Runway aguardam limites específicos da plataforma. Higgsfield possui cotações por duração; tarifas com ~ ficam desativadas por padrão. O Starter Higgsfield não herda acesso de outros planos. Detalhes e fontes estão em [AUDITORIA.md](AUDITORIA.md).
+Krea e SJinn têm preços de assinatura auditados, mas não tarifa exata suficiente para os seis modelos. Não entram automaticamente no custo de vídeo. Wan Prime na Magnific usa a tarifa atual da central de créditos e limites de 2–30s confirmados pelas páginas da plataforma. Wan 3 no Runway ainda aguarda limites específicos da assinatura; os limites da API não são usados como se fossem da assinatura. Higgsfield possui cotações por duração; tarifas com ~ ficam desativadas por padrão. O Starter Higgsfield não herda acesso de outros planos. Detalhes e fontes estão em [AUDITORIA.md](AUDITORIA.md).
 
 Não existe integração com saldos reais, checkout, login multiusuário ou sincronização. Projetos ficam no navegador e domínio onde foram criados. A revisão migra configurações antigas para mensal, desativa aproximações e preserva saldos, tarifas manuais e projetos salvos; estes devem ser revisados pelo usuário.
 

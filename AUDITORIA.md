@@ -80,9 +80,9 @@ Projeto com 8 cenas de 8s, 5 execuções por cena, Seedance 2.5/720p no Premium 
 ## Dados pendentes e aproximações
 
 - Krea e SJinn: assinatura confirmada, consumo exato por versão/resolução/duração pendente. Contagens aproximadas de vídeos não viram tarifa.
-- Wan Prime Magnific: tabela publica 100/200/400 créditos/s em 480p/780p/1080p, mas limites específicos do Prime não foram consolidados; automático desativado.
+- Wan Prime Magnific (atualização 1.1.1): automático habilitado em 2–30s. O artigo oficial confirma as mesmas especificações de Wan 3; a página do modelo informa 2–30s. Consumo 100/200/400 créditos/s em 480p/780p/1080p, pela central de créditos atual. O artigo de lançamento possui preços diferentes; essa divergência continua registrada.
 - Wan 3 Runway: 5/10/20 créditos/s confirmados, porém limites específicos de duração pendentes; automático desativado.
-- Kling 4 Magnific: apenas 840 créditos/3s em 1080p disponíveis como referência. Não extrapolado para 4s, 8s ou outros clipes; a calculadora principal parte de 4s.
+- Kling 4 Magnific: apenas 840 créditos/3s em 1080p disponíveis como referência. Não extrapolado para 4s, 8s ou outros clipes; a versão 1.1.1 permite calcular a cotação de 3s e exibe um atalho explícito, preservando o plano.
 - Higgsfield Seedance 2 e Kling 3: a tabela usa ~ para valores de 5s; são aproximações optativas e não são extrapoladas. Starter não herda compatibilidade do Plus/Ultra.
 - Seedance 2.5 Magnific: catálogo de preços lista o modelo, mas a página de lançamento ainda diz Coming soon. A disponibilidade individual permanece sujeita à conta.
 - Áudio, qualidade e uso de vídeo de referência são dimensões diferentes. Não inferimos custos de vídeo de entrada nem consideramos acesso ilimitado condicionado como custo zero.
@@ -91,3 +91,5 @@ Projeto com 8 cenas de 8s, 5 execuções por cena, Seedance 2.5/720p no Premium 
 ## Prevenção de recorrência
 
 Testes agora cobrem o catálogo real e a composição, além de fórmulas genéricas: ciclos separados, alocações específicas, mesmo plano em todas as resoluções, monotonicidade por plano, nenhuma substituição por outro fornecedor, cotações isoladas, limites pendentes, preço manual, duração 31s/61s/125s e consistência entre geração e projeto. A revisão deve conferir preços no site carregado com ambos os ciclos selecionados; testar apenas fórmulas não valida dados comerciais.
+
+A versão 1.1.1 também corrige a digitação invertida e a escolha de resolução ao trocar modelo. Evidências e mudanças: [CORRECOES-1.1.1.md](CORRECOES-1.1.1.md).

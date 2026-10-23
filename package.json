@@ -1,6 +1,6 @@
 {
   "name": "framecost",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -11,6 +11,6 @@
     "start": "node server.mjs",
     "build": "npm run check && npm test && node scripts/build.mjs",
     "test": "node tests/engine.test.mjs",
-    "check": "node --check dist/app.mjs && node --check dist/engine.mjs && node --check dist/data.mjs && node --check dist/catalog.mjs && node --check dist/comparison.mjs && node --check dist/segments.mjs"
+    "check": "node --check dist/app.mjs && node --check dist/engine.mjs && node --check dist/data.mjs && node --check dist/catalog.mjs && node --check dist/comparison.mjs && node --check dist/segments.mjs && node --check dist/live-render.mjs"
   }
 }

@@ -2,10 +2,50 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {plans,rules,ruleMatches} from '../dist/data.mjs';
 import {segment,simulate,project} from '../dist/engine.mjs';
-import {terms,generationResults,focusResult,rankResults,eligiblePlans,matchingRule,correspondingPlan} from '../dist/comparison.mjs';
+import {terms,generationResults,focusResult,rankResults,eligiblePlans,matchingRule,correspondingPlan,modelResolutions,resolutionForModel,configurationChoices} from '../dist/comparison.mjs';
 const date='2026-10-23';
 const approx=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 const byId=id=>plans.find(p=>p.id===id);
+test('switching Seedance 480p to Kling 3 selects a resolution in the chosen plan',()=>{
+ const p=byId('mag-premium-monthly');
+ assert.equal(resolutionForModel(p,rules,'kling-3','480p'),'720p');
+});
+test('Wan resolution choices use the selected plan rather than other providers',()=>{
+ const p=byId('mag-premium-monthly');
+ assert.deepEqual(modelResolutions(p,rules,'wan-3'),['480p','780p','1080p']);
+ assert.equal(resolutionForModel(p,rules,'wan-3','720p'),'780p');
+});
+test('switching model keeps a valid chosen resolution',()=>{
+ assert.equal(resolutionForModel(byId('mag-premium-monthly'),rules,'wan-3','1080p'),'1080p');
+});
+test('Kling 4 exposes the confirmed Magnific 3s quote without changing the plan',()=>{
+ const p=byId('mag-premium-monthly');
+ assert.deepEqual(configurationChoices(p,rules,{model:'kling-4',resolution:'1080p',duration:8}),[{resolution:'1080p',duration:3}]);
+ const rows=generationResults({plans,rules,config:{model:'kling-4',resolution:'1080p',duration:3,count:3},period:'monthly',date});
+ const row=focusResult(rows,p.id);assert.equal(row.one.required,840);approx(row.one.economic,3.36);
+});
+test('confirmed quote suggestions respect Higgsfield paid-plan access',()=>{
+ const c={model:'kling-4',resolution:'720p',duration:8};
+ assert.deepEqual(configurationChoices(byId('hf-starter-monthly'),rules,c),[]);
+ assert.equal(configurationChoices(byId('hf-plus-monthly'),rules,c).length,4);
+});
+test('Wan Prime now has platform-specific limits and tariff at every listed resolution',()=>{
+ const p=byId('mag-premium-monthly');
+ for(const [resolution,rate]of[['480p',100],['780p',200],['1080p',400]]){
+  const r=matchingRule(p,rules,{model:'wan-prime',resolution});
+  assert.equal(r.billing.min,2);assert.equal(r.billing.max,30);assert.equal(r.billing.rate,rate);assert.equal(r.status,'verified');
+  approx(simulate(p,r,8,1,{date}).economic,rate*8*80/20000);
+ }
+});
+test('Wan Prime long clips are split without charging unnecessary seconds',()=>{
+ const p=byId('mag-premium-monthly'),r=matchingRule(p,rules,{model:'wan-prime',resolution:'1080p'});
+ const result=simulate(p,r,31,1,{date});assert.equal(result.generated,31);assert.equal(result.required,12400);
+});
+test('Kling 3 correct resolution is calculable after a model change',()=>{
+ const p=byId('mag-premium-monthly'),resolution=resolutionForModel(p,rules,'kling-3','480p');
+ const result=simulate(p,matchingRule(p,rules,{model:'kling-3',resolution}),8,1,{date});
+ assert.equal(result.required,560);approx(result.economic,2.24);
+});
 const calc=(id,model,resolution,duration=8,count=1)=>{
  const p=byId(id),r=matchingRule(p,rules,{model,resolution});
  return simulate(p,r,duration,count,{date});

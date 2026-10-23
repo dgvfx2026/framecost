@@ -20,7 +20,7 @@ export function groupKey(row){
   return [p.period,r.model,r.resolution,r.quality,r.mode,r.audio,one.generated,p.status,r.status].join('|');
 }
 export function generationResults({plans,rules,config,period='monthly',includeEstimated=false,accounts={},date}){
-  numeric(config.duration,'Duração',{min:4,max:86400});
+  numeric(config.duration,'Duração',{min:.1,max:86400});
   numeric(config.count,'Execuções',{min:1,max:100000,integer:true});
   const outcomes=[];
   for(const p of eligiblePlans(plans,{period,date,accounts})){
@@ -39,6 +39,24 @@ export function generationResults({plans,rules,config,period='monthly',includeEs
   return outcomes;
 }
 export function focusResult(rows,planId){return rows.find(r=>r.p.id===planId&&!r.pending&&!r.error)||null;}
+export function modelResolutions(plan,rules,model){
+  const compatible=rules.filter(r=>r.model===model&&r.billing&&r.status!=='pending'&&(!plan||matchingRule(plan,rules,r)===r));
+  return [...new Set(compatible.map(r=>r.resolution))].sort((a,b)=>parseInt(a)-parseInt(b));
+}
+export function resolutionForModel(plan,rules,model,current){
+  const local=modelResolutions(plan,rules,model),all=modelResolutions(null,rules,model);
+  const options=local.length?local:all;
+  if(options.includes(current))return current;
+  return [...options].sort((a,b)=>Math.abs(parseInt(a)-parseInt(current))-Math.abs(parseInt(b)-parseInt(current)))[0]||current;
+}
+export function configurationChoices(plan,rules,config){
+  if(!plan)return [];
+  return rules.filter(r=>r.model===config.model&&r.billing&&r.status==='verified'&&matchingRule(plan,rules,r)===r).flatMap(r=>{
+    if(r.billing.type==='reference')return r.billing.options.map(q=>({resolution:r.resolution,duration:q.seconds}));
+    const duration=Math.max(Number(config.duration)||0,r.billing.min||.1);
+    return [{resolution:r.resolution,duration}];
+  }).sort((a,b)=>(a.resolution!==config.resolution)-(b.resolution!==config.resolution)||Math.abs(a.duration-config.duration)-Math.abs(b.duration-config.duration));
+}
 export function correspondingPlan(plans,id,period){
   const p=plans.find(x=>x.id===id);
   if(!p)return null;

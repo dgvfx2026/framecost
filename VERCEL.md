@@ -15,7 +15,7 @@ O repositório contém uma aplicação estática pronta para importação. O `ve
 | Node.js | 22 ou superior |
 | Environment Variables | Nenhuma |
 
-O build confere a sintaxe, executa os 72 testes financeiros e de regressão comercial e verifica os arquivos da aplicação. O diretório `dist/` já contém os arquivos estáticos; não depende de um bundler. Os módulos `.mjs` têm cabeçalho JavaScript explícito na configuração da Vercel.
+O build confere a sintaxe, executa os 80 testes financeiros e de regressão comercial e verifica os arquivos da aplicação. O diretório `dist/` já contém os arquivos estáticos; não depende de um bundler. Os módulos `.mjs` têm cabeçalho JavaScript explícito na configuração da Vercel.
 
 O `server.mjs` serve somente para desenvolvimento local. A Vercel distribui `dist/` diretamente, sem manter esse processo em execução. Não selecione um framework de servidor Node/Express.
 
