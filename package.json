@@ -1,0 +1,16 @@
+{
+  "name": "framecost",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "build": "npm run check && npm test && node scripts/build.mjs",
+    "test": "node tests/engine.test.mjs",
+    "check": "node --check dist/app.mjs && node --check dist/engine.mjs && node --check dist/data.mjs"
+  }
+}

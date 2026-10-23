@@ -1,0 +1,11 @@
+node_modules/
+.sites-runtime/
+.sites-checkout/
+*.tar.gz
+graphify-out/
+.openai/
+.vercel/
+.env
+.env.*
+!.env.example
+*.log
