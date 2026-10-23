@@ -149,7 +149,8 @@ test('Higgsfield exact 5s quote and resolution ordering',()=>{
 });
 test('unverified durations and approximate rates cannot receive exact prices by default',()=>{
  const rows=generationResults({plans,rules,config:{model:'wan-3',resolution:'720p',duration:8,count:3},period:'monthly',date});
- assert.ok(rows.filter(r=>r.p.platform==='runway'||r.p.platform==='higgsfield').every(r=>r.pending));
+ assert.ok(rows.filter(r=>r.p.platform==='higgsfield').every(r=>r.pending));
+ assert.ok(rows.filter(r=>r.p.platform==='runway').every(r=>!r.pending));
  const hf=generationResults({plans,rules,config:{model:'kling-3',resolution:'720p',duration:5,count:3},period:'monthly',date});
  assert.ok(hf.find(r=>r.p.id==='hf-plus-monthly').pending);
 });

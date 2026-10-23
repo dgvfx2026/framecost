@@ -1,0 +1,209 @@
+{
+  "date": "2026-10-23",
+  "source": "https://app.runwayml.com",
+  "mode": "Guest / Tool / Video, sem geração",
+  "wanPrime": [
+    {
+      "cost": [
+        "34 credits per video"
+      ],
+      "duration": "5s",
+      "model": "Wan 3.0 Prime",
+      "resolution": "480p"
+    },
+    {
+      "cost": [
+        "70 credits per video"
+      ],
+      "duration": "5s",
+      "model": "Wan 3.0 Prime",
+      "resolution": "720p"
+    },
+    {
+      "cost": [
+        "140 credits per video"
+      ],
+      "duration": "5s",
+      "model": "Wan 3.0 Prime",
+      "resolution": "1080p"
+    }
+  ],
+  "kling4": [
+    {
+      "cost": "71 credits per video",
+      "duration": "3s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "94 credits per video",
+      "duration": "4s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "118 credits per video",
+      "duration": "5s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "141 credits per video",
+      "duration": "6s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "165 credits per video",
+      "duration": "7s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "188 credits per video",
+      "duration": "8s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "212 credits per video",
+      "duration": "9s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "235 credits per video",
+      "duration": "10s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "259 credits per video",
+      "duration": "11s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "282 credits per video",
+      "duration": "12s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "306 credits per video",
+      "duration": "13s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "329 credits per video",
+      "duration": "14s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "353 credits per video",
+      "duration": "15s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "376 credits per video",
+      "duration": "16s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "400 credits per video",
+      "duration": "17s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "423 credits per video",
+      "duration": "18s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "447 credits per video",
+      "duration": "19s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "470 credits per video",
+      "duration": "20s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "494 credits per video",
+      "duration": "21s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "517 credits per video",
+      "duration": "22s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "541 credits per video",
+      "duration": "23s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "564 credits per video",
+      "duration": "24s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "588 credits per video",
+      "duration": "25s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "611 credits per video",
+      "duration": "26s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "635 credits per video",
+      "duration": "27s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "658 credits per video",
+      "duration": "28s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    },
+    {
+      "cost": "682 credits per video",
+      "duration": "29s",
+      "model": "Kling 4.0",
+      "resolution": "1080p"
+    }
+  ],
+  "limits": {
+    "wan-3": [
+      2,
+      30
+    ],
+    "wan-prime": [
+      2,
+      30
+    ],
+    "kling-4": [
+      3,
+      30
+    ]
+  }
+}

@@ -65,7 +65,8 @@ export function segment(duration,billing){
       for(let i=0;i<count;i++){
         // Leave enough duration for every remaining clip: 31s => 27s + 4s, not 30s + 4s.
         const units=Math.min(maxUnits,remaining-(count-i-1)*minUnits);
-        const seconds=units*step;clips.push({seconds,credits:seconds*rate});remaining-=units;
+        const seconds=units*step,rawCredits=seconds*rate;
+        clips.push({seconds,credits:billing.creditRounding==='nearest'?Math.round(rawCredits):rawCredits});remaining-=units;
       }
     }
   }else if(billing.type==='presets')clips=presetComposition(target,billing.options,.1);

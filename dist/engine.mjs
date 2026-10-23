@@ -2,6 +2,7 @@ import {segment} from './segments.mjs';
 export {segment};
 // Pure calculation engine: native currencies, no DOM, no rounding money before display.
 export const EPS=1e-8;
+function validateTariffDate(rule,date){if(rule.validUntil&&rule.validUntil<(date||new Date().toISOString().slice(0,10)))throw new Error('A cotação deste modelo venceu em '+rule.validUntil+'. Atualize a tarifa; isso não significa que o modelo seja incompatível.');}
 export function numeric(value,label,{min=0,max=1e9,integer=false}={}){const n=Number(value);if(value===''||value==null||!Number.isFinite(n)||n<min||n>max||(integer&&!Number.isInteger(n)))throw new Error(label+': valor inválido.');return n}
 export function unitCost(cost,credits){return numeric(cost,'Custo')/numeric(credits,'Créditos',{min:EPS})}
 export function attributableCost(plan){return plan.period==='annual'&&plan.creditPeriod==='monthly'?plan.price/12:plan.price}
@@ -16,6 +17,7 @@ export function additional(plan,required,{owned=false,lots=[],date}={}){
  return {payment,purchased:0,reason:owned?'Saldo informado suficiente.':'Cenário de nova contratação; saldo da conta não consultado.'};
 }
 export function simulate(plan,rule,duration,count=1,account={}){
+ validateTariffDate(rule,account.date);
  const n=numeric(count,'Execuções',{min:1,max:100000,integer:true});const clip=segment(duration,rule.billing);const rate=unitCost(attributableCost(plan),plan.credits);const lots=account.owned?(account.lots??[]):[{id:'plan',credits:plan.credits,originalCredits:plan.credits,cost:attributableCost(plan),priority:0}];const available=activeLots(lots,account.date).reduce((s,l)=>s+l.credits,0);const required=clip.credits*n;const economic=spend(lots,required,plan.topup?plan.topup.price/plan.topup.credits:rate,account.date);const cash=additional(plan,required,account);
  return {...clip,count:n,required,economic:economic.cost,economicEstimated:economic.estimated,payment:cash.payment,purchased:cash.purchased,paymentReason:cash.reason,available,remaining:Math.max(0,available-required),shortfall:Math.max(0,required-available),remainingAfterPurchase:cash.payment==null?null:Math.max(0,available+cash.purchased-required),capacity:Math.floor((available+EPS)/clip.credits),capacityAfter:Math.floor((Math.max(0,available-required)+EPS)/clip.credits),percent:available>0?required/available*100:null,perSecond:economic.cost/(clip.generated*n),unitRate:rate,estimated:plan.status!=='verified'||rule.status!=='verified'||economic.estimated};
 }
@@ -23,7 +25,7 @@ export function operations(items,scenes){return items.reduce((sum,x)=>{const val
 export function pricing(cost,{method='margin',percent=40,provision=0}={}){numeric(cost,'Custo');const p=numeric(percent,'Percentual',{min:0,max:method==='margin'?99.99:10000})/100;const f=numeric(provision,'Provisão',{min:0,max:99.99})/100;if(method==='margin'&&p+f>=1)throw new Error('Margem + provisão deve ser menor que 100%.');const sale=method==='markup'?cost*(1+p)/(1-f):cost/(1-p-f);const fees=sale*f;const profit=sale-cost-fees;return {cost,sale,fees,profit,margin:sale?profit/sale*100:0}}
 export function project(plan,scenes,resolveRule,{reserveType='percent',reserve=20,items=[],pricing:price={},account={}}={}){
  if(!scenes.length)throw new Error('Adicione pelo menos uma cena.');let baseCredits=0,baseGenerated=0,desired=0,executions=0,segments=0,sceneCount=0;const details=[];
- for(const s of scenes){const q=numeric(s.quantity,'Quantidade de cenas',{min:1,max:10000,integer:true});const attempts=numeric(s.attempts,'Tentativas',{min:1,max:10000,integer:true});const r=resolveRule(s);if(!r)throw new Error('Sem tarifa compatível para '+(s.name||'uma das cenas')+'.');const c=segment(s.duration,r.billing);baseCredits+=c.credits*q*attempts;baseGenerated+=c.generated*q*attempts;desired+=c.requested*q;executions+=q*attempts;segments+=c.segments*q*attempts;sceneCount+=q;details.push({...c,quantity:q,attempts,rule:r})}
+ for(const s of scenes){const q=numeric(s.quantity,'Quantidade de cenas',{min:1,max:10000,integer:true});const attempts=numeric(s.attempts,'Tentativas',{min:1,max:10000,integer:true});const r=resolveRule(s);if(!r)throw new Error('Tarifa ainda não cadastrada para '+(s.name||'uma das cenas')+'. Isso não indica incompatibilidade do modelo.');validateTariffDate(r,account.date);const c=segment(s.duration,r.billing);baseCredits+=c.credits*q*attempts;baseGenerated+=c.generated*q*attempts;desired+=c.requested*q;executions+=q*attempts;segments+=c.segments*q*attempts;sceneCount+=q;details.push({...c,quantity:q,attempts,rule:r})}
  const rv=numeric(reserve,'Reserva',{max:reserveType==='percent'?1000:100000,integer:reserveType==='extra'});let reserveCredits=0,extraSegments=0,extraGenerated=0;
  if(reserveType==='percent'){reserveCredits=baseCredits*rv/100;extraGenerated=baseGenerated*rv/100}
  else {for(let i=0;i<rv;i++){const d=details[i%details.length];reserveCredits+=d.credits;extraSegments+=d.segments;extraGenerated+=d.generated}}

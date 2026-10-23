@@ -2,7 +2,7 @@
 
 ## Testes automatizados
 
-npm run build: **80 testes aprovados, zero falhas**, sintaxe de sete módulos aprovada e arquivos/importações de dist verificados. O teste nativo roda diretamente em Node, sem subprocesso de teste.
+npm run build: **94 testes aprovados, zero falhas**, sintaxe de sete módulos aprovada e arquivos/importações de dist verificados. O teste nativo roda diretamente em Node, sem subprocesso de teste.
 
 Os 41 testes de motor cobrem custo, lotes, validade, saldo/déficit, planos mensais/anuais, recargas, cenas, reservas, operação, markup, margem, provisão e câmbio. Os 39 novos casos de regressão cobrem também preços e créditos reais do catálogo, isolamento de ciclos, plano em foco fixo, resolução, duração, cotações de referência, prioridade manual e ordenação pelo pagamento exibido.
 
@@ -37,3 +37,13 @@ Vercel: npm run build valida a saída estática dist; configuração versionada,
 ## Correção 1.1.1: Kling, Wan e digitação
 
 Oito regressões automatizadas adicionais cobrem opções por plano, mudança de modelo, durações publicadas de Kling 4, acesso Higgsfield, tarifas e segmentação de Wan Prime. No navegador, digitação tecla a tecla validou 15 na duração, 15 no contador de execuções, edição intermediária 15 → 125, 15 na quantidade de cenas e 15.5 no valor operacional. Campos limpos permanecem presentes e focados durante a edição. Conferidos Kling 3 (8s/720p = 560 créditos), Wan 3 (8s/780p = 960), Wan Prime (8s/780p = 1.600) e Kling 4 Magnific (3s/1080p = 840), sempre no Premium mensal. Nenhum erro ou aviso capturado no console desses cenários. Veja CORRECOES-1.1.1.md para fontes e limites.
+
+## Runway — versão 1.1.2
+
+94 testes aprovados, incluindo 14 novos testes dedicados ao Runway. Asserções percorrem os quatro modelos, os seis planos mensais/anuais e durações de 4 a 125s; também conferem todas as 27 cotações nativas capturadas para Kling 4/1080p. A rotina que preserva digitação não foi modificada.
+
+Na prévia isolada HTTP 200 (porta 4178), os quatro modelos foram selecionados no Runway Pro mensal, sem trocar de plataforma. Para 8s: Kling 3/720p sem áudio = 72 cr., US$ 1,12; Kling 4/1080p = 188 cr., US$ 2,92; Wan 3/720p = 80 cr., US$ 1,24; Prime/720p = 112 cr., US$ 1,74. Áudio em Kling 3 alterou os consumos para 104 e 136 créditos em 720p/1080p. Anual Pro manteve 2.250 créditos mensais e mostrou cobrança integral de US$ 336. Projeto com 8 cenas de Kling 4/8s, 3 tentativas, 20% de reserva e margem 40%: 5.414,4 créditos, custo US$ 66,64, venda US$ 111,07 e pagamento simulado US$ 75 com pacotes inteiros. Nenhum erro/aviso no console durante esses cenários.
+
+As fontes e a limitação de preço 720p do Kling 4 estão em CORRECOES-1.1.2.md. O rodapé mostra a versão para conferir o novo deploy.
+
+Após recarregar a versão final, a digitação sequencial de 15 manteve o campo focado e exibiu 15s no cálculo. Kling 4/8s/1080p foi conferido novamente no Runway Pro: 188 créditos e US$ 2,92 por execução, com três execuções por US$ 8,77. Registro visual salvo junto aos arquivos de entrega em framecost-runway-kling4-corrigido.png.

@@ -49,3 +49,4 @@ test('commercial entries carry official source and verification state',()=>{for(
 test('expired promotional offer cannot quote a fresh purchase',()=>assert.equal(additional({...plan,validUntil:'2026-10-22'},10,{date:'2026-10-23'}).payment,null));
 test('insufficient unknown-origin credits flag estimated economic value',()=>{const r=spend([],10,.2);assert.equal(r.estimated,true);assert.equal(r.cost,2);assert.equal(spend([],10,null).cost,null)});
 import './regressions.test.mjs';
+import './runway.test.mjs';

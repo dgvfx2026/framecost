@@ -13,7 +13,7 @@ export function matchingRule(plan,rules,config){
   const compatible=r=>r.platform===plan.platform&&r.model===config.model&&r.resolution===config.resolution;
   const own=rules.find(r=>compatible(r)&&r.planId===plan.id);
   if(own||plan.status==='manual')return own||null;
-  return rules.find(r=>compatible(r)&&!r.planId&&(!r.planIds||r.planIds.includes(plan.id)));
+  return rules.find(r=>compatible(r)&&!r.planId&&(!r.planIds||r.planIds.includes(plan.id))&&(r.model!=='kling-3'||Boolean(r.klingAudio)===Boolean(config.klingAudio)));
 }
 export function groupKey(row){
   const {p,r,one}=row;
@@ -51,7 +51,7 @@ export function resolutionForModel(plan,rules,model,current){
 }
 export function configurationChoices(plan,rules,config){
   if(!plan)return [];
-  return rules.filter(r=>r.model===config.model&&r.billing&&r.status==='verified'&&matchingRule(plan,rules,r)===r).flatMap(r=>{
+  return rules.filter(r=>r.model===config.model&&r.billing&&r.status==='verified'&&matchingRule(plan,rules,{...r,klingAudio:config.klingAudio})===r).flatMap(r=>{
     if(r.billing.type==='reference')return r.billing.options.map(q=>({resolution:r.resolution,duration:q.seconds}));
     const duration=Math.max(Number(config.duration)||0,r.billing.min||.1);
     return [{resolution:r.resolution,duration}];
