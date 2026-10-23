@@ -1,26 +1,11 @@
+import {segment} from './segments.mjs';
+export {segment};
 // Pure calculation engine: native currencies, no DOM, no rounding money before display.
 export const EPS=1e-8;
 export function numeric(value,label,{min=0,max=1e9,integer=false}={}){const n=Number(value);if(value===''||value==null||!Number.isFinite(n)||n<min||n>max||(integer&&!Number.isInteger(n)))throw new Error(label+': valor inválido.');return n}
 export function unitCost(cost,credits){return numeric(cost,'Custo')/numeric(credits,'Créditos',{min:EPS})}
 export function attributableCost(plan){return plan.period==='annual'&&plan.creditPeriod==='monthly'?plan.price/12:plan.price}
 export function convert(value,from,to,fx){if(value==null||!Number.isFinite(value))return null;if(from===to)return value;if(!Number.isFinite(fx)||fx<=0)return null;return from==='USD'?value*fx:value/fx}
-export function segment(duration,billing){
- const target=numeric(duration,'Duração',{min:EPS,max:86400});
- if(!billing)throw new Error('Regra de consumo pendente.');
- let clips=[];
- if(billing.type==='second'||billing.type==='block'){
-  const min=numeric(billing.min,'Duração mínima',{min:EPS});const max=numeric(billing.max,'Duração máxima',{min});const step=numeric(billing.step??1,'Passo',{min:EPS});const count=Math.ceil((target-EPS)/max);
-  for(let i=0;i<count;i++){const requested=Math.min(max,target-i*max);const seconds=Math.min(max,Math.max(min,Math.ceil((requested-EPS)/step)*step));const credits=billing.type==='second'?seconds*numeric(billing.rate,'Tarifa'):Math.ceil((seconds-EPS)/numeric(billing.block,'Bloco',{min:EPS}))*numeric(billing.rate,'Tarifa');clips.push({seconds,credits})}
- }else if(billing.type==='presets'){
-  const opts=billing.options.map(o=>({seconds:numeric(o.seconds,'Duração do clipe',{min:EPS}),credits:numeric(o.credits,'Consumo')}));if(!opts.length)throw new Error('Durações pendentes.');
-  // Bounded dynamic programming: minimum credits to cover duration, then least excess.
-  const precision=10, goal=Math.ceil(target*precision-EPS), max=Math.max(...opts.map(o=>Math.round(o.seconds*precision)));if(goal>1000000)throw new Error('Duração muito longa.');
-  const costs=new Float64Array(goal+max+1).fill(Infinity), prev=new Int32Array(costs.length).fill(-1), chosen=new Int32Array(costs.length).fill(-1);costs[0]=0;
-  for(let i=0;i<goal;i++)if(Number.isFinite(costs[i]))opts.forEach((o,k)=>{const next=i+Math.round(o.seconds*precision);if(costs[i]+o.credits<costs[next]-EPS){costs[next]=costs[i]+o.credits;prev[next]=i;chosen[next]=k}});
-  let end=goal;for(let i=goal;i<costs.length;i++)if(costs[i]<costs[end]-EPS)end=i;if(!Number.isFinite(costs[end]))throw new Error('Composição indisponível.');while(end>0){clips.push(opts[chosen[end]]);end=prev[end]}clips.reverse();
- }else throw new Error('Consumo ilimitado ou especial: não há tarifa linear confirmada.');
- return {clips,segments:clips.length,requested:target,generated:clips.reduce((s,x)=>s+x.seconds,0),credits:clips.reduce((s,x)=>s+x.credits,0)};
-}
 export function activeLots(lots=[],date=new Date().toISOString().slice(0,10)){return lots.filter(l=>!l.expires||l.expires>=date).sort((a,b)=>(a.priority??99)-(b.priority??99)||String(a.expires||'9999').localeCompare(String(b.expires||'9999')))}
 export function spend(lots,credits,fallback,date){let need=credits,cost=0,used=[];for(const l of activeLots(lots,date)){const take=Math.min(numeric(l.credits,'Saldo'),need);if(take>0){const rate=unitCost(l.cost,l.originalCredits??l.credits);cost+=take*rate;need-=take;used.push({id:l.id,credits:take,cost:take*rate})}}if(need>EPS){if(fallback==null)return {cost:null,unfunded:need,used,estimated:true};cost+=need*fallback}return {cost,unfunded:Math.max(0,need),used,estimated:need>EPS}}
 export function additional(plan,required,{owned=false,lots=[],date}={}){

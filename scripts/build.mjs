@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 const projectRoot=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const config=JSON.parse(await readFile(resolve(projectRoot,'vercel.json'),'utf8'));
 if(config.outputDirectory!=='dist')throw new Error('O diretório de publicação deve ser dist.');
-const required=['index.html','styles.css','app.mjs','engine.mjs','data.mjs'];
+const required=['index.html','styles.css','app.mjs','engine.mjs','data.mjs','catalog.mjs','comparison.mjs','segments.mjs'];
 for(const name of required){
   const path=resolve(projectRoot,'dist',name);
   const info=await stat(path);
@@ -13,7 +13,7 @@ for(const name of required){
 }
 const html=await readFile(resolve(projectRoot,'dist/index.html'),'utf8');
 if(!html.includes('src="app.mjs"')||!html.includes('href="styles.css"'))throw new Error('Referências de entrada inválidas.');
-for(const name of ['app.mjs','engine.mjs','data.mjs']){
+for(const name of ['app.mjs','engine.mjs','data.mjs','catalog.mjs','comparison.mjs','segments.mjs']){
   const code=await readFile(resolve(projectRoot,'dist',name),'utf8');
   for(const match of code.matchAll(/(?:from\s*|import\s*)['"](\.\.?\/[^'"]+)['"]/g)){
     const path=resolve(projectRoot,'dist',match[1]);

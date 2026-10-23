@@ -1,33 +1,35 @@
-# Validação — 23/10/2026
+# Validação — revisão 2, 23/10/2026
 
-## Automatizada
+## Testes automatizados
 
-`npm test`: **41 testes aprovados, 0 falhas**. Fixtures fictícias estão identificadas no arquivo de testes e não alimentam o catálogo comercial.
+npm run build: **72 testes aprovados, zero falhas**, sintaxe de seis módulos aprovada e arquivos/importações de dist verificados. O teste nativo roda diretamente em Node, sem subprocesso de teste.
 
-Cobertura: custo unitário, custo de geração, arredondamento, limites por clipe, duração acima de 60s, tarifas de blocos/predefinidas, três execuções, capacidade, saldo/déficit, planos diferentes, dados incompletos, câmbio, validade e origem de créditos, uso ilimitado não linear, contratação versus consumo econômico, assinatura já paga, recargas inteiras, liberação mensal de planos anuais, cenas heterogêneas, reserva percentual/execuções, custos fixos/por cena/por hora, markup, margem, provisão, validação de percentuais, comparação equivalente, indisponibilidade e promoção vencida.
+Os 41 testes de motor cobrem custo, lotes, validade, saldo/déficit, planos mensais/anuais, recargas, cenas, reservas, operação, markup, margem, provisão e câmbio. Os 31 novos casos de regressão cobrem também preços e créditos reais do catálogo, isolamento de ciclos, plano em foco fixo, resolução, duração, cotações de referência, prioridade manual e ordenação pelo pagamento exibido.
 
-`npm run check`: sintaxe dos três módulos aprovada. Servidor local respondeu HTTP 200.
+Casos centrais: Magnific Premium mensal/Seedance 2.5/8s = R$ 6,40, R$ 14,08 e R$ 35,20 em 480p/720p/1080p; cena de 31s = 27s + 4s; 61s = 30s + 27s + 4s. Monotonicidade verificada para cada plano auditado Magnific/Runway, dois modelos, cinco durações e uma/três execuções. Asserções sobre dados comerciais são regressões do snapshot auditado, não substituem a consulta das fontes.
 
-Preparação para GitHub/Vercel: `npm run build` incorpora a checagem de sintaxe, os testes financeiros e a validação dos arquivos de `dist/` e das importações locais. `vercel.json` declara saída estática e dispensa instalação e variáveis de ambiente. O deploy na conta Vercel será realizado pelo usuário; não foi apresentado como executado nesta entrega.
+## Navegador local
 
-## Navegador
+Prévia HTTP 200. Verificações nos endereços locais 127.0.0.1:4173 e localhost:4173. O segundo foi usado com dados de teste separados para conferir o projeto padrão sem remover o estado persistente existente no primeiro.
 
-Validado no navegador embutido, em viewport desktop de 1440×1000, tablet na largura padrão e celular de 390×844 (área útil de 375px). Nenhuma rolagem horizontal observada no projeto móvel. Capturas desktop e celular acompanham a entrega.
+- Troca 480p → 1080p mantém Magnific Premium mensal. Cartões de resolução mostram exatamente os três valores acima.
+- Troca mensal → anual mantém família/plataforma e mostra R$ 29,50/mês equivalente, R$ 354/ano e 240.000 créditos anuais; retorno mensal mostra R$ 80 e 20.000 mensais.
+- Runway Pro mensal/Seedance 2.5/8s em USD: 480p US$ 2,49; 720p US$ 3,73; 1080p US$ 8,46; o plano continua selecionado.
+- Kling 4/8s no plano Runway continua pendente, sem fallback para outro fornecedor. Higgsfield Plus/5s/720p calcula 25 créditos e US$ 1,23.
+- Cena 31s na interface gera 31s, custa R$ 54,56 e sinaliza o custo estimado de três execuções além do saldo.
+- Projeto padrão novo: 8 cenas, 40 execuções, 320s gerados, 168.960 créditos com reserva, custo por rateio R$ 675,84 e venda R$ 1.126,40 com margem 40%. Pagamento de IA a confirmar e aviso de estimativa além do saldo presentes.
+- Navegação das quatro seções funciona. Tabelas de assinaturas mostram separadamente ambos os ciclos, incluindo SJinn Standard mensal US$ 19,90 e Krea Basic anual US$ 5,25/mês equivalente.
+- Migração do estado anterior apresenta aviso de revisão, preserva histórico e muda configuração ativa para mensal. Histórico salvo deve ser revisado pelo usuário.
+- Console da prévia: nenhuma mensagem de erro ou aviso capturada durante os cenários executados. Câmbio Frankfurter retornou referência de 23/10/2026, 5,0465 BRL/USD; não é valor fixo do app.
 
-Controles exercitados:
+Geração e projeto conferidos em viewports 1440×1000, 768×1000 e 375×1000 (áreas úteis 1425, 753 e 360 px pela barra de rolagem). Nenhuma rolagem horizontal do documento nos seis cenários. Capturas salvas na entrega. Comparação visual automatizada com baseline: **INCONCLUSIVA**, pois não há baseline versionada equivalente. Não foi feita medição de Core Web Vitals, auditoria axe/WCAG nem teste completo de teclado/leitor de tela.
 
-- Os seis seletores de modelo; mudança de resolução; duração personalizada de 125s e rejeição de 3s na calculadora principal.
-- Filtro mensal/todos; ordenação por pagamento/custo; exclusão de estimativas e estado sem tarifas completas.
-- Expansão dos resultados com fontes, custo por crédito, saldo, déficit e capacidade.
-- Saldo previamente pago de 10 mil créditos: pagamento extra de uma execução = R$ 0, com custo econômico preservado; três execuções insuficientes passam a “a confirmar” quando não há recarga pública confirmada.
-- Cadastro de tarifa de teste manual Krea, cálculo com selo manual e posterior remoção. O catálogo original não foi alterado por esse teste.
-- Projeto com dois modelos, cena de 125s e múltiplas tentativas; custos fixos de R$ 1.000 e três horas a R$ 50, total operacional R$ 1.150.
-- Markup e provisão; cenário margem 90% + provisão 10% bloqueado com mensagem visível.
-- Salvamento local e reabertura; exportação CSV baixada e conteúdo financeiro conferido.
-- Câmbio Frankfurter consultado com sucesso: referência retornada em 23/10/2026, taxa USD/BRL 5,0465. É uma referência de teste da consulta, não taxa fixa do aplicativo.
+## Escopo e publicação
 
-A impressão/PDF usa o diálogo nativo do navegador. A geração do PDF pelo usuário não foi concluída durante a validação. O CSV foi validado; a serialização JSON está implementada, mas o download JSON não foi exercitado no navegador. Nem todas as combinações de foco/teclado e leitores de tela foram testadas. Não foi feita auditoria externa de acessibilidade, carga ou segurança.
+Veredito funcional desta correção: **SHIP**, para os cenários descritos e com pendências comerciais explicitamente bloqueadas. A verificação visual de regressão permanece inconclusiva. Não representa auditoria completa de acessibilidade ou de todas as jornadas.
 
-## Confiabilidade comercial
+Exportação CSV/JSON e impressão permanecem implementadas. O CSV foi conferido na versão anterior; os downloads não foram repetidos nesta revisão. O indicador de custo estimado foi incluído no CSV. Não foram realizados compras, login nas plataformas, checkout, consulta de saldo real ou deploy na conta Vercel.
 
-Foram consultadas páginas oficiais de Magnific, Runway e sua Academy/central de ajuda, Higgsfield, Krea e SJinn. Divergências, indisponibilidade do conteúdo dinâmico ou ausência da tarifa exata permanecem identificadas. Não foi possível confirmar condições dentro das contas autenticadas nem no checkout de contratação. Os valores são planejamento e não constituem consulta a saldo ou proposta comercial garantida.
+Preços de assinatura foram confrontados com páginas oficiais carregadas, incluindo alternância mensal/anual. Consumo e limites possuem fontes específicas. Quando a evidência é incompleta, o cálculo fica pendente; aproximações exigem ativação explícita. Veja AUDITORIA.md.
+
+Vercel: npm run build valida a saída estática dist; configuração versionada, sem instalação/variáveis de ambiente. Publicação real depende da integração/configuração do projeto Vercel do usuário.

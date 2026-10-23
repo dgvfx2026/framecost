@@ -1,107 +1,68 @@
 # Framecost — AI Video Cost Calculator
 
-Aplicação funcional de planejamento de geração de vídeo com IA e precificação de produção audiovisual. Interface em português, tema escuro, responsiva, sem cadastro obrigatório e sem dependências de infraestrutura paga.
+Calculadora de consumo de geração de vídeo com IA e orçamento de produção. Interface em português, armazenamento local, exportação JSON/CSV e aplicação estática sem dependências externas de instalação.
 
-## Executar
+**Revisão 2, 23/10/2026:** corrige preços comerciais, separa cobrança mensal/anual e mantém o plano escolhido ao trocar resolução. Consulte [AUDITORIA.md](AUDITORIA.md) para valores, causas e exemplos reproduzíveis. Tarifas sem evidência suficiente ficam pendentes.
 
-Requer Node.js 22 ou superior. Na pasta deste arquivo:
+## Executar e validar
+
+Requer Node.js 22 ou superior. Na raiz do repositório:
 
 ```sh
 npm start
+npm run build
 ```
 
-Acesse `http://127.0.0.1:4173`. Não é necessário instalar pacotes. Para validar:
+Abra http://127.0.0.1:4173. O build confere sintaxe, executa 72 testes e verifica todos os arquivos estáticos e importações. Não é necessário instalar pacotes. O runner é executado diretamente para compatibilidade com ambientes Windows restritos.
 
-```sh
-npm test
-npm run check
-```
+## Uso
 
-O comando de testes executa diretamente o runner nativo do Node, evitando a criação de subprocessos restrita em alguns ambientes Windows.
+1. Escolha modelo, duração, resolução e um único ciclo de assinatura.
+2. Escolha o plano em foco. Trocar resolução mantém esse plano; dados ausentes resultam em “A confirmar”. O quadro de resoluções mostra os custos do mesmo plano lado a lado.
+3. Compare custo econômico, créditos e pagamento adicional. No anual, o valor por mês é equivalente; a cobrança inicial inclui o ano inteiro.
+4. Se já possui assinatura ou créditos comprados, informe o saldo e o custo de origem. Nenhum saldo externo é consultado.
+5. Em Projetos, configure cenas, tentativas, reserva, trabalho operacional e margem/markup. Exporte o orçamento para preservar o resultado.
 
-## Funcionalidades implementadas
+O comparativo filtra mensal e anual separadamente. Selos só comparam mesmo modelo, resolução, qualidade, áudio, duração gerada, ciclo e status da fonte. Consumo estimado além do saldo recebe ≈ e não recebe selo de menor custo.
 
-- Calculadora de gerações com os seis modelos solicitados, duração personalizada, resolução e comparação por plataforma/plano.
-- Custo econômico de uma, três e uma quantidade personalizada de execuções completas.
-- Composição de conteúdos longos em segmentos com tarifas por segundo, blocos ou durações predefinidas.
-- Capacidade do plano, saldo, déficit, consumo percentual e pagamento adicional separados.
-- Contas simuladas por plano: assinatura já paga, créditos comprados e bônus; custo de origem, prioridade e validade dos lotes.
-- Contratação de planos inteiros, liberação mensal versus anual e estratégia de recargas Runway em pacotes de 1.000 créditos.
-- Filtros de ciclo e status, ordenação por custo, capacidade e desembolso. Selos de melhor custo restritos a grupos equivalentes.
-- Calculadora de projetos com grupos de cenas distintos, modelos, durações, resoluções e tentativas por cena.
-- Reserva percentual de consumo ou execuções extras; custos fixos, por cena e por hora.
-- Precificação por markup ou margem de lucro sobre a venda, com provisão proporcional opcional.
-- Comparação do mesmo projeto em planos compatíveis com todas as cenas.
-- Salvamento de projetos no navegador, exportação CSV do orçamento, exportação JSON das gerações e impressão/PDF pelo navegador.
-- Tarifas manuais identificadas, fontes oficiais, datas de consulta e metodologia visível.
-- USD/BRL com taxa de referência Frankfurter ou taxa manual, ambas datadas. Valores nativos preservados.
-
-## Tecnologias e organização
-
-JavaScript modular ES, HTML semântico, CSS responsivo, armazenamento local do navegador, Node.js e seu runner de testes nativo. O frontend estático pode ser hospedado sem servidor de aplicação. O pequeno servidor local usa somente módulos nativos do Node.
+## Organização
 
 | Arquivo | Responsabilidade |
 | --- | --- |
-| `dist/data.mjs` | Catálogo comercial e fontes |
-| `dist/engine.mjs` | Cálculos puros compartilhados pelas duas calculadoras |
-| `dist/app.mjs` | Interface, validação, estado, câmbio e exportação |
-| `dist/styles.css` | Tema, acessibilidade e adaptação de tela |
-| `tests/engine.test.mjs` | 41 testes automatizados com fixtures fictícias identificadas |
-| `VALIDACAO.md` | Evidências dos testes e limites conhecidos |
+| dist/catalog.mjs | Preços, créditos por ciclo, tarifas, limites e fontes auditadas |
+| dist/data.mjs | Entrada pública do catálogo |
+| dist/segments.mjs | Composição de clipes e regras de cobrança |
+| dist/engine.mjs | Custo econômico, saldo, pagamento, projeto e precificação |
+| dist/comparison.mjs | Filtros, plano em foco, ciclo, equivalência e ranking |
+| dist/app.mjs | Interface, estado local, migração, câmbio e exportação |
+| tests/engine.test.mjs | Testes do motor e entrada da suíte |
+| tests/regressions.test.mjs | Casos reais do catálogo e regressões dos erros relatados |
+| AUDITORIA.md | Preços revisados, exemplos e limites comerciais |
+| VALIDACAO.md | Evidências e escopo dos testes |
 
-## Regras financeiras
+## Regras de cálculo
 
-1. Custo unitário = custo atribuível ao saldo / créditos originais do saldo.
-2. Na assinatura anual com créditos mensais, o custo atribuível ao mês é o preço anual / 12; o desembolso de contratação continua sendo o preço anual integral.
-3. Cada execução cobre a duração solicitada usando clipes permitidos. Em tarifas predefinidas, não interpolamos custos: a composição busca o menor consumo entre os clipes cadastrados e mostra a duração gerada, inclusive excesso.
-4. Três execuções repetem o conteúdo completo. Quando os lotes têm valores diferentes, o custo de três pode diferir do triplo do custo de uma.
-5. Lotes expirados não são consumidos. A assinatura tem prioridade, seguida de créditos comprados e bônus, conforme o cenário informado.
-6. O saldo nunca fica negativo: exibimos separadamente o déficit. Recargas não confirmadas resultam em pagamento “a confirmar”.
-7. Para créditos além do saldo, o custo econômico usa a tarifa do pacote conhecido ou o rateio do plano como estimativa explicitamente sinalizada.
-8. Reserva percentual acrescenta uma provisão de consumo uma única vez. Execuções extras alternam os grupos de cenas, incluindo todos os segmentos de cada execução.
-9. Markup: `preço = custo × (1 + markup) / (1 − provisão)`.
-10. Margem: `preço = custo / (1 − margem − provisão)`. Lucro = preço − custo − provisão sobre a venda. A soma de margem e provisão deve ser menor que 100%.
-11. Não são aplicados impostos, IOF nem taxas de cartão automaticamente. Valores são arredondados para apresentação, preservando precisão intermediária.
+- Valor de origem por crédito = custo atribuível / créditos originais do lote. Anuidade com liberação mensal usa preço anual / 12 e apenas os créditos daquele mês; Magnific anual usa a anuidade e o saldo anual liberado.
+- Tarifas por segundo repartem a duração entre clipes permitidos. Exemplo: mínimo 4s, máximo 30s, conteúdo de 31s → 27s + 4s. O passo de cobrança continua explícito.
+- Tarifas manuais por blocos ou durações predefinidas buscam a composição de menor consumo. Duração efetivamente gerada aparece na tela.
+- Uma cotação de 5s não permite inferir valores de 8s nem obrigar múltiplos de 5s. Cotações de referência calculam somente durações publicadas; composição acima do máximo exige cotação de cada segmento.
+- Cada execução repete o conteúdo completo. Custos de três execuções consomem os lotes em sequência; não são necessariamente o triplo quando os lotes têm custos distintos.
+- Assinatura já paga afeta o pagamento adicional, não zera o custo econômico. Lotes vencidos são ignorados. Saldo e déficit ficam separados.
+- Sem saldo suficiente, somente recarga documentada gera valor de contratação. Sem preço de recarga, o pagamento fica pendente; o rateio de consumo além do saldo é estimado e marcado com ≈.
+- Reserva percentual é provisão de consumo aplicada uma vez; não promete um número fracionário de clipes. A reserva por execuções extras alterna os grupos de cenas.
+- Markup: preço = custo × (1 + markup) / (1 − provisão). Margem: preço = custo / (1 − margem − provisão). Margem + provisão deve ser menor que 100%.
+- Não há imposto, IOF ou taxa de cartão presumidos. Câmbio Frankfurter ou manual é datado; sem taxa, moedas diferentes não recebem ranking comum.
 
-## Dados confirmados em 23/10/2026
+## Limitações
 
-Os links estão no catálogo e na área “Fontes e metodologia”. Não representam garantia de preço futuro.
+Krea e SJinn têm preços de assinatura auditados, mas não tarifa exata suficiente para os seis modelos. Não entram automaticamente no custo de vídeo. Wan Prime na Magnific e Wan 3 no Runway aguardam limites específicos da plataforma. Higgsfield possui cotações por duração; tarifas com ~ ficam desativadas por padrão. O Starter Higgsfield não herda acesso de outros planos. Detalhes e fontes estão em [AUDITORIA.md](AUDITORIA.md).
 
-- **Magnific:** Premium promocional de R$ 354/ano por 240 mil créditos anuais, Premium+ de R$ 1.620/ano por 600 mil e Pro Starter de R$ 3.960/ano por 1,5 milhão. Créditos válidos por um ano, sem reset mensal. Promoção Premium anunciada até 26/10/2026. Oferta vencida deixa de participar de novas contratações.
-- **Magnific, tarifas de clipes publicadas:** Seedance 2 Pro 720p, 1.120 créditos/4s; Seedance 2.5, 1.760/4s em 720p e 4.400/4s em 1080p; Kling 3 Pro 1080p, 450/5s; Kling 4 1080p sem vídeo de entrada, 840/3s. Estas são composições conservadoras de clipes documentados, não uma alegação de que a plataforma só oferece essa duração.
-- **Runway:** Standard 625, Pro 2.250 e Max 9.500 créditos/mês. Mensalidades US$ 15/35/95; anuais US$ 144/336/912, com liberação mensal dos créditos. Seedance 2.5: 20/30/68 créditos por segundo em 480p/720p/1080p, sem referência de vídeo. Limites próprios do Runway de 4–30s. Recargas a partir de 1.000 créditos por US$ 10; a simulação usa pacotes inteiros de 1.000.
-- **Higgsfield:** Kling 4 com 25/37,5 créditos por 5s e 150/225 por 30s em 720p/1080p. O preço do plano Plus citado no artigo oficial é uma referência editorial de US$ 49/1.000 créditos, classificada como estimada diante de divergências com a tabela dinâmica.
-- **Krea:** preços e alocações mensais regulares cadastrados, incluindo Basic US$ 9/5 mil units, Pro US$ 35/20 mil, Max US$ 105/60 mil e Business US$ 200/80 mil. Consumo exato não foi inferido da capacidade aproximada publicada.
-- **SJinn:** alocações publicadas de 20/60/120 mil e 1,2 milhão de créditos mensais. Periodicidade e pagamento anual inferidos do desconto de 40% são classificados como estimados. A tarifa genérica “seedance” não é atribuída à versão 2.5.
+Não existe integração com saldos reais, checkout, login multiusuário ou sincronização. Projetos ficam no navegador e domínio onde foram criados. A revisão migra configurações antigas para mensal, desativa aproximações e preserva saldos, tarifas manuais e projetos salvos; estes devem ser revisados pelo usuário.
 
-## Lacunas e limitações conhecidas
+## Atualizar e publicar
 
-- Krea e SJinn ficam visíveis no catálogo, mas só entram em cálculos após fornecer uma tarifa manual compatível. Não é apresentada uma falsa comparação completa entre cinco plataformas.
-- Wan 3/Prime na Magnific vêm de tabela oficial alternativa divergente da tabela principal atual: estimados. Wan 3 no Runway tem tarifa confirmada, mas limite de duração específico ainda pendente; usa referência do modelo, identificada como estimativa.
-- Seedance 2 no Runway tem divergência entre preço de referência de 4s e guia de criação com mínimo de 5s. O cálculo usa 5s de forma conservadora e fica estimado.
-- Nenhum acesso ilimitado condicionado é modelado como custo zero. Não há cálculo para limites diários, filas e políticas de uso justo sem dados suficientes.
-- O modo implementado é texto/imagem sem vídeo de referência de entrada. Não há cobrança simulada para edição, extensão ou vídeo de referência.
-- A tarifa de Kling 3 no Runway está documentada, mas sua variante/resolução não foi consolidada com evidência suficiente nesta versão. Não a adicionamos por suposição.
-- No saldo Runway, o lote comprado também pode representar rollover com custo e validade informados. Esta versão não possui um gerenciador ilimitado de categorias de saldo.
-- O saldo é declarado pelo usuário. Não existem integração com contas externas, login multiusuário, sincronização de projetos, cobrança de assinaturas ou administração avançada.
-- Projetos são locais ao navegador. Limpar dados do site remove o histórico. Exporte para preservar o orçamento.
-- Câmbio exige conexão com o serviço externo ou entrada manual. Sem taxa, valores nativos permanecem disponíveis e não há classificação entre moedas diferentes.
-- Fontes podem mudar; o catálogo é atualizado pela equipe, sem raspagem automática em produção. Dados faltantes permanecem pendentes.
-
-## Atualizar dados comerciais
-
-Edite `dist/data.mjs`: `sources` registra URL e consulta, `plans` registra preço integral e periodicidade, `rules` registra cada configuração e sua cobrança. Use `verified` apenas para fatos confirmados; `estimated` para inferências ou divergências; valores desconhecidos devem permanecer ausentes. Não converta capacidades aproximadas em tarifas exatas.
-
-Ao adicionar um plano anual, confira `creditPeriod`: `monthly` significa créditos mensais, `annual` significa o saldo anual disponível. Aplique `validUntil` a promoções. Não reutilize créditos da API como se fossem saldo da assinatura.
-
-Após qualquer alteração, execute `npm test` e `npm run check`. Valide manualmente configurações novas, totais, saldo e comparação. Atualize data e fontes. Nenhuma credencial deve entrar no frontend.
-
-## Publicar
+Edite dist/catalog.mjs, registrando fonte, data, preço integral, moeda, ciclo de pagamento, ciclo de liberação de créditos e consumo por configuração. Não deduza mensalidades de descontos promocionais nem tarifas de capacidades aproximadas. Incremente CATALOG_VERSION em revisões comerciais que exijam aviso de migração. Execute npm run build e confira cenários reais no navegador.
 
 Repositório: https://github.com/dgvfx2026/framecost
 
-Para publicar na **Vercel**, importe este repositório mantendo a raiz `./`. O arquivo `vercel.json` configura **Framework: Other**, **Build Command: `npm run build`**, **Output Directory: `dist`** e nenhuma etapa de instalação. O build executa a checagem de sintaxe, os 41 testes e a validação dos arquivos estáticos. Nenhuma variável de ambiente é exigida. O passo a passo completo está em [VERCEL.md](VERCEL.md).
-
-O diretório de publicação é `dist/`. Ele pode ser servido em qualquer hospedagem estática HTTPS com tipos MIME corretos para `.mjs`. Sem etapa de build e sem dependências a instalar. A chamada de câmbio ocorre no navegador; seu provedor deve permitir a política CORS do Frankfurter. Não use o servidor local de desenvolvimento como servidor público.
-
-A configuração local de outras hospedagens (`.openai/`), credenciais (`.env*`) e arquivos locais da Vercel (`.vercel/`) ficam fora do repositório. O controle de acesso da hospedagem é independente do aplicativo, que não exige cadastro próprio.
+Na Vercel, importe a raiz do repositório com Framework **Other**, Build **npm run build**, Output **dist**, sem instalação nem variáveis de ambiente. O vercel.json já declara esses parâmetros e o MIME dos módulos. Consulte [VERCEL.md](VERCEL.md). O servidor local não é executado na Vercel. Credenciais, .openai/, .vercel/ e .env* ficam fora do repositório.

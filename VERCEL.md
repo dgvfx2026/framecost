@@ -15,7 +15,7 @@ O repositório contém uma aplicação estática pronta para importação. O `ve
 | Node.js | 22 ou superior |
 | Environment Variables | Nenhuma |
 
-O build confere a sintaxe, executa os 41 testes financeiros e verifica os arquivos da aplicação. O diretório `dist/` já contém os arquivos estáticos; não depende de um bundler. Os módulos `.mjs` têm cabeçalho JavaScript explícito na configuração da Vercel.
+O build confere a sintaxe, executa os 72 testes financeiros e de regressão comercial e verifica os arquivos da aplicação. O diretório `dist/` já contém os arquivos estáticos; não depende de um bundler. Os módulos `.mjs` têm cabeçalho JavaScript explícito na configuração da Vercel.
 
 O `server.mjs` serve somente para desenvolvimento local. A Vercel distribui `dist/` diretamente, sem manter esse processo em execução. Não selecione um framework de servidor Node/Express.
 
@@ -30,6 +30,6 @@ Abra `http://127.0.0.1:4173`. Após o deploy, teste gerações, projetos, export
 
 Projetos e saldos são armazenados no navegador e no domínio onde foram criados. O histórico local não é transferido automaticamente para um novo domínio.
 
-Para atualizar os preços, edite `dist/data.mjs`, execute os testes e envie um novo commit. Uma integração Git habilitada na Vercel poderá publicar as alterações posteriores conforme as configurações do projeto.
+Para atualizar os preços, edite `dist/catalog.mjs`, execute os testes e envie um novo commit. Uma integração Git habilitada na Vercel poderá publicar as alterações posteriores conforme as configurações do projeto.
 
 Referência oficial: https://vercel.com/docs/project-configuration/vercel-json

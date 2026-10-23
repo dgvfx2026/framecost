@@ -14,7 +14,7 @@ test('per-clip maximum segments a long target',()=>{const r=segment(25,rule.bill
 test('projects can exceed 60 seconds',()=>{const r=segment(125,rule.billing);assert.equal(r.segments,13);assert.equal(r.generated,125)});
 test('fixed presets do not invent a per-second tariff',()=>{const r=segment(6,{type:'presets',options:[{seconds:5,credits:20},{seconds:10,credits:35}]});assert.equal(r.credits,35);assert.equal(r.generated,10)});
 test('fixed presets choose lower credit composition',()=>{const r=segment(30,{type:'presets',options:[{seconds:5,credits:25},{seconds:30,credits:150}]});assert.equal(r.credits,150);assert.equal(r.generated,30)});
-test('block billing rounds separately for each segment',()=>{const r=segment(13,{type:'block',min:4,max:10,step:1,block:4,rate:10});assert.equal(r.credits,40);assert.equal(r.generated,14)});
+test('block billing covers the target without an artificial extra second',()=>{const r=segment(13,{type:'block',min:4,max:10,step:1,block:4,rate:10});assert.equal(r.credits,40);assert.equal(r.generated,13)});
 test('three complete independent executions',()=>{const r=simulate(plan,rule,8,3);assert.equal(r.required,4800);close(r.economic,4.8);assert.equal(r.remaining,25200)});
 test('whole generation capacity and remaining capacity',()=>{const r=simulate(plan,rule,8,3);assert.equal(r.capacity,18);assert.equal(r.capacityAfter,15);close(r.percent,16)});
 test('insufficient balance is a shortfall, never negative balance',()=>{const r=simulate(plan,rule,10,20);assert.equal(r.remaining,0);assert.equal(r.shortfall,10000)});
@@ -43,8 +43,9 @@ test('markup with provision preserves profit on cost',()=>{const r=pricing(1000,
 test('invalid percentages and quantities rejected',()=>{assert.throws(()=>pricing(1000,{percent:100}));assert.throws(()=>pricing(1000,{percent:90,provision:10}));assert.throws(()=>simulate(plan,rule,10,1.5));assert.throws(()=>simulate(plan,rule,-1))});
 test('same project alternatives preserve the scenario',()=>{const a=project(plan,[scene],()=>rule,{reserve:0});const b=project({...plan,price:60},[scene],()=>rule,{reserve:0});assert.equal(a.baseCredits,b.baseCredits);assert.equal(a.baseGenerated,b.baseGenerated);assert.equal(a.desired,b.desired);assert.ok(b.ai>a.ai)});
 test('missing rule in a mixed project fails the whole alternative',()=>assert.throws(()=>project(plan,[scene,{...scene,model:'missing'}],s=>s.model==='missing'?null:rule)));
-test('platform compatibility is explicit and incomplete rates stay absent',()=>{assert.equal(availability('krea','seedance-25'),'verified');assert.equal(getRules('kr-pro','seedance-25').length,0);assert.equal(getRules('mag-premium','kling-4','1080p').length,1)});
+test('platform compatibility is not inferred from approximate generation counts',()=>{assert.equal(availability('krea','seedance-25'),'pending');assert.equal(getRules('kr-pro','seedance-25').length,0);assert.equal(getRules('mag-premium','kling-4','1080p').length,1)});
 test('all six models and five requested platforms are represented',()=>{assert.equal(models.length,6);assert.equal(platforms.length,5)});
 test('commercial entries carry official source and verification state',()=>{for(const x of [...plans,...rules]){assert.ok(x.source);assert.ok(['verified','estimated','pending'].includes(x.status))}});
 test('expired promotional offer cannot quote a fresh purchase',()=>assert.equal(additional({...plan,validUntil:'2026-10-22'},10,{date:'2026-10-23'}).payment,null));
 test('insufficient unknown-origin credits flag estimated economic value',()=>{const r=spend([],10,.2);assert.equal(r.estimated,true);assert.equal(r.cost,2);assert.equal(spend([],10,null).cost,null)});
+import './regressions.test.mjs';
