@@ -1,0 +1,36 @@
+/* Animated presentation stays separate from the calculator's financial rules. */
+.motion-enabled .view{animation:none}
+:is(.btn,.icon-btn,.duration-pills button,.nav button){transition-property:background,border-color,box-shadow,scale;transition-duration:.25s;transition-timing-function:cubic-bezier(.2,.8,.2,1)}
+:is(.btn,.icon-btn,.duration-pills button,.nav button):active{scale:.94}
+dialog[open]::backdrop{animation:backdrop-emerge .4s ease-out}
+.motion-enabled [data-reveal="pending"]{opacity:0;pointer-events:none}
+.motion-enabled [data-reveal="playing"]{will-change:translate,scale,opacity,filter}
+.motion-enabled [data-reveal="done"]{opacity:1}
+
+.liquid-card{isolation:isolate;transform:perspective(1100px) rotateX(var(--liquid-rx,0deg)) rotateY(var(--liquid-ry,0deg)) skewX(var(--liquid-skew,0deg)) translateY(var(--liquid-lift,0px));transition:border-color .3s,box-shadow .4s}
+.liquid-card:not(.quote){position:relative}
+.liquid-card:focus-within{transform:none}
+.liquid-card.liquid-active{border-color:#81bcff8c;box-shadow:inset 0 1px 0 #b6e3ff1f,0 16px 42px #0003,0 0 32px #377cde1f}
+.liquid-surface{--liquid-x:50%;--liquid-y:50%;--liquid-tail-x:50%;--liquid-tail-y:50%;position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:2;opacity:0;transition:opacity .7s ease;mix-blend-mode:screen}
+.liquid-active>.liquid-surface{opacity:1;transition-duration:.22s}
+.liquid-surface::after{content:'';position:absolute;inset:0;border-radius:inherit;border:1px solid #b0edff35;box-shadow:inset 0 0 28px #6f98ff0a}
+.liquid-flow{position:absolute;inset:-2px;filter:blur(20px);opacity:.5}
+.liquid-flow i{position:absolute;display:block;width:230px;height:160px;border-radius:43% 57% 64% 36% / 48% 35% 65% 52%;background:radial-gradient(ellipse,#4ab9f787,#53a3f743 43%,#5298ff00 72%);transform:translate(-50%,-50%) rotate(var(--liquid-angle,0deg)) scaleX(var(--liquid-stretch,1));animation:liquid-morph 3.5s ease-in-out infinite alternate;animation-play-state:paused}
+.liquid-flow i:first-child{left:var(--liquid-x);top:var(--liquid-y)}
+.liquid-flow i:nth-child(2){left:var(--liquid-tail-x);top:var(--liquid-tail-y);width:170px;height:140px;background:radial-gradient(ellipse,#a185ff78,#8652ef24 55%,#8c60ff00 74%);animation-delay:-1.8s;animation-direction:alternate-reverse}
+.liquid-flow i:nth-child(3){left:calc(100% - var(--liquid-tail-x));top:calc(100% - var(--liquid-tail-y));width:110px;height:110px;background:radial-gradient(ellipse,#73edff52,#42cffa00 70%);animation-delay:-.7s}
+.liquid-active .liquid-flow i{animation-play-state:running}
+.liquid-reflection{position:absolute;inset:0;background:radial-gradient(350px 200px at var(--liquid-x) var(--liquid-y),#cdf6ff13,transparent 65%),radial-gradient(200px 120px at var(--liquid-tail-x) var(--liquid-tail-y),#ad8aff0d,transparent 70%)}
+.liquid-ripple{position:absolute;display:block;border:1px solid #b4ecff70;border-radius:50%;background:radial-gradient(ellipse,transparent 58%,#92dcff13 66%,#a3c4ff3d 69%,transparent 72%);box-shadow:inset 0 0 28px #89d0ff14,0 0 18px #96d8ff0a;will-change:transform,opacity}
+.model>.liquid-surface .liquid-flow{opacity:.6;filter:blur(15px)}
+.model>.liquid-surface .liquid-flow i{width:140px;height:90px}
+.model>.liquid-surface .liquid-flow i:nth-child(2){width:100px;height:70px}
+.resolution-option>.liquid-surface .liquid-flow{opacity:.45}
+.generation-dashboard>.page-head::after{animation:hero-tide 8s ease-in-out infinite alternate}
+.motion-enabled .brand-mark{animation:brand-breathe 4s ease-in-out infinite alternate}
+@keyframes liquid-morph{0%{border-radius:43% 57% 64% 36% / 48% 35% 65% 52%}50%{border-radius:61% 39% 37% 63% / 35% 58% 42% 65%}100%{border-radius:35% 65% 54% 46% / 62% 37% 63% 38%}}
+@keyframes hero-tide{from{transform:rotate(-20deg) translate(0,0);opacity:.55}to{transform:rotate(-9deg) translate(18px,-8px);opacity:1}}
+@keyframes brand-breathe{from{box-shadow:inset 0 1px 0 #b7e5ff2b,0 0 18px #2468e628}to{box-shadow:inset 0 1px 0 #b7e5ff35,0 0 32px #348cff55}}
+@keyframes backdrop-emerge{from{opacity:0}to{opacity:1}}
+@media(hover:none),(pointer:coarse){.liquid-surface{display:none}.liquid-card{transform:none}}
+@media print{.motion-enabled [data-reveal]{opacity:1!important;translate:none!important;scale:none!important;filter:none!important;pointer-events:auto!important;will-change:auto}.liquid-card{transform:none!important}.liquid-surface{display:none!important}}
