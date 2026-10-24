@@ -47,3 +47,7 @@ Na prévia isolada HTTP 200 (porta 4178), os quatro modelos foram selecionados n
 As fontes e a limitação de preço 720p do Kling 4 estão em CORRECOES-1.1.2.md. O rodapé mostra a versão para conferir o novo deploy.
 
 Após recarregar a versão final, a digitação sequencial de 15 manteve o campo focado e exibiu 15s no cálculo. Kling 4/8s/1080p foi conferido novamente no Runway Pro: 188 créditos e US$ 2,92 por execução, com três execuções por US$ 8,77. Registro visual salvo junto aos arquivos de entrega em framecost-runway-kling4-corrigido.png.
+
+## Design 1.2.0
+
+Tema atualizado a partir da referência enviada, nas quatro telas e nos diálogos. Conferência das quatro telas em 375, 768 e 1440px sem rolagem horizontal. Digitação sequencial de 15, seleção de modelos, áudio do Kling 3, moeda, plano e passagem de geração para projeto continuam funcionando. Os quatro modelos Runway mantiveram os custos da versão 1.1.2 no cenário testado. Acesso por teclado apresentou contorno de foco de 2px. O indicador circular usa o consumo real do mesmo cálculo da barra de saldo. Console sem erros ou avisos nos cenários observados. Detalhes e limites da verificação estão em DESIGN-1.2.0.md.

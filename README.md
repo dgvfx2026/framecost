@@ -4,6 +4,8 @@ Calculadora de consumo de geração de vídeo com IA e orçamento de produção.
 
 **Revisão 2, 23/10/2026:** corrige preços comerciais, separa cobrança mensal/anual e mantém o plano escolhido ao trocar resolução. Consulte [AUDITORIA.md](AUDITORIA.md) para valores, causas e exemplos reproduzíveis. Tarifas sem evidência suficiente ficam pendentes.
 
+**Design 1.2.0:** interface em azul marinho com painéis translúcidos, navegação compacta, contornos luminosos e indicador circular do consumo real de créditos. Tema aplicado a Gerações, Projetos, Planos e Fontes. Consulte [DESIGN-1.2.0.md](DESIGN-1.2.0.md) para o escopo e a validação visual.
+
 ## Executar e validar
 
 Requer Node.js 22 ou superior. Na raiz do repositório:
