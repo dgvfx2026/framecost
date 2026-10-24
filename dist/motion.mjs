@@ -1,6 +1,6 @@
 // Presentation only. Animation history survives result re-renders within a view.
 const REVEALS='.page-head,.focus-panel,.configure,.model,.metric,.resolution-audit,.resolution-option,.results-head,.comparison,.result-row,.pending-data,.retry,.project-teaser,.project-form>.card,.scene,.cost-item,.quote,.source-card,.source-entry,.method,.billing-panel,.fx-strip,.foot';
-const LIQUID='.card,.model,.resolution-option';
+const LIQUID='.card,.model,.resolution-option,.generation-dashboard>.page-head';
 const CONTROL='input,select,textarea,[contenteditable="true"]';
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 
@@ -140,7 +140,8 @@ export function createMotion(root){
   observer?.disconnect();observer=null;
   for(const element of animations.keys())finish(element);
   stopLiquid();
-  for(const state of states.values()){state.surface.remove();state.element.classList.remove('liquid-card');}
+  for(const surface of root.querySelectorAll('.liquid-surface'))surface.remove();
+  for(const element of root.querySelectorAll('.liquid-card'))element.classList.remove('liquid-card');
   states=new Map();records.clear();
  }
 
@@ -166,14 +167,12 @@ export function createMotion(root){
    element.dataset.reveal='pending';
    if(isChrome)reveal(element,chrome.indexOf(element)*65);else observer.observe(element);
   }
-  if(hover.matches&&typeof Element.prototype.animate==='function'){
-   for(const element of root.querySelectorAll(LIQUID)){
+  for(const element of root.querySelectorAll(LIQUID)){
     element.classList.add('liquid-card');
     const surface=document.createElement('span');surface.className='liquid-surface';surface.setAttribute('aria-hidden','true');
-    surface.innerHTML='<span class="liquid-flow"><i></i><i></i><i></i></span><span class="liquid-reflection"></span>';
+    surface.innerHTML='<span class="liquid-rim"></span><span class="liquid-flow"><i></i><i></i><i></i></span><span class="liquid-reflection"></span>';
     element.append(surface);
-    states.set(element,{element,surface,over:false,live:false,x:.5,y:.5,tx:.5,ty:.5,tailX:.5,tailY:.5,vx:0,vy:0,engagement:0,tilt:clamp(1800/Math.max(element.clientWidth,element.clientHeight,1),1.4,6)});
-   }
+    if(hover.matches&&typeof Element.prototype.animate==='function')states.set(element,{element,surface,over:false,live:false,x:.5,y:.5,tx:.5,ty:.5,tailX:.5,tailY:.5,vx:0,vy:0,engagement:0,tilt:clamp(1400/Math.max(element.clientWidth,element.clientHeight,1),1.2,4)});
   }
  }
 

@@ -8,6 +8,8 @@ Calculadora de consumo de geração de vídeo com IA e orçamento de produção.
 
 **Animações 1.3.0:** entradas automáticas em cascata, revelação ao rolar a página e vidro líquido nos cards com mouse. Sem botão de ativação. A digitação e as regras financeiras permanecem preservadas. Prévia e validação em [ANIMACOES-1.3.0.md](ANIMACOES-1.3.0.md).
 
+**Liquid Glass 1.4.0:** acabamento de vidro permanente nos cards, com transparência, desfoque do fundo, bordas arredondadas com reflexo e luz branca que acompanha o mouse. O material também aparece no layout mobile; as animações continuam automáticas. Prévia e validação em [LIQUID-GLASS-1.4.0.md](LIQUID-GLASS-1.4.0.md).
+
 ## Executar e validar
 
 Requer Node.js 22 ou superior. Na raiz do repositório:
